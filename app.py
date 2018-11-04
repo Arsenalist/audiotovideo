@@ -18,6 +18,10 @@ def execute():
     soundcloud_track_url = args.soundcloud_url
     yt_cat_id = args.yt_cat
     soundcloud_track = sc.get_soundcloud_track(soundcloud_client_id, soundcloud_track_url)
+
+    if soundcloud_track.downloadable is False:
+        raise Exception("File is not enabled for downloads from Soundcloud")
+
     audio_file = resourcedownloader.download_file(soundcloud_track.download_url + "?client_id=" +
                                                   soundcloud_client_id, "audio.mp3")
     if args.background is None:
