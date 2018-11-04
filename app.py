@@ -3,11 +3,17 @@ import yt
 import resourcedownloader
 import ffmpegconverter
 import settingsprovider
+import argparse
 
 def execute():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--sc-track-id", required=True, help="Soundcloud track ID is required", type=int)
+    args = parser.parse_args()
+
     settings = settingsprovider.get_settings()
     soundcloud_client_id = settings['soundcloud']['client_id']
-    soundcloud_track_id = 522474537
+    soundcloud_track_id = args.sc_track_id
     soundcloud_track = sc.get_soundcloud_track(soundcloud_client_id, soundcloud_track_id)
     audio_file = resourcedownloader.download_file(soundcloud_track.download_url + "?client_id=" +
                                                   soundcloud_client_id, "audio.mp3")
