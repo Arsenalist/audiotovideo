@@ -17,8 +17,7 @@ def execute():
     soundcloud_track = sc.get_soundcloud_track(soundcloud_client_id, soundcloud_track_id)
     audio_file = resourcedownloader.download_file(soundcloud_track.download_url + "?client_id=" +
                                                   soundcloud_client_id, "audio.mp3")
-    image_file = resourcedownloader.download_file(soundcloud_track.artwork_url.replace('large', 't500x500'),
-                                                  "image.jpg")
+    image_file = resourcedownloader.download_file(sc.get_highres_image(soundcloud_track.artwork_url), "image.jpg")
     ffmpegconverter.convert_to_video(image_file, audio_file, "video.mp4")
     yt.execute_youtube_upload("video.mp4", soundcloud_track.title, soundcloud_track.description, 17)
 
