@@ -86,18 +86,18 @@ def get_authenticated_service(args):
 def initialize_upload(youtube, options):
     tags = None
 
-    if options.keywords:
-        tags = options.keywords.split(",")
+    if 'keywords' in options:
+        tags = options["keywords"].split(",")
 
     body = dict(
         snippet=dict(
-            title=options.title,
-            description=options.description,
+            title=options["title"],
+            description=options["description"],
             tags=tags,
-            categoryId=options.category
+            categoryId=options["category"]
         ),
         status=dict(
-            privacyStatus=options.privacyStatus
+            privacyStatus=options["privacyStatus"]
         )
     )
 
@@ -116,7 +116,7 @@ def initialize_upload(youtube, options):
         # practice, but if you're using Python older than 2.6 or if you're
         # running on App Engine, you should set the chunksize to something like
         # 1024 * 1024 (1 megabyte).
-        media_body=MediaFileUpload(options.file, chunksize=-1, resumable=True)
+        media_body=MediaFileUpload(options["file"], chunksize=-1, resumable=True)
     )
 
     resumable_upload(insert_request)
@@ -158,13 +158,14 @@ def resumable_upload(insert_request):
 
 
 def execute_youtube_upload(file, title, description, category):
-    argparser.add_argument("--file", required=False, default=file)
-    argparser.add_argument("--title", required=False, default=title)
-    argparser.add_argument("--description", required=False, default=description)
-    argparser.add_argument("--category", required=False, default=category)
-    argparser.add_argument("--keywords", required=False, default="toronto raptors")
-    argparser.add_argument("--privacyStatus", choices=VALID_PRIVACY_STATUSES, default=VALID_PRIVACY_STATUSES[0])
-    args = argparser.parse_args()
+    args = {}
+    args["file"] = file
+    args["title"] = title
+    args["description"] = description
+    args["category"] = category
+    args["keywords"] = "toronto raptors"
+    args["privacyStatus"] = VALID_PRIVACY_STATUSES[0]
+
     youtube = get_authenticated_service(args)
     try:
         initialize_upload(youtube, args)
